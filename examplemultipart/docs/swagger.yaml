@@ -1,0 +1,190 @@
+components:
+  schemas:
+    main.ChybovaOdpoved:
+      properties:
+        kod:
+          example: 400
+          type: integer
+        zprava:
+          example: Špatný požadavek
+          type: string
+      type: object
+    main.SouborInfo:
+      properties:
+        cesta_souboru:
+          example: /uploads/dokument_123456.pdf
+          type: string
+        datum_upload:
+          example: "2023-01-01T00:00:00Z"
+          type: string
+        id:
+          example: 1
+          type: integer
+        metadata:
+          $ref: '#/components/schemas/main.SouborMetadata'
+        nazev_souboru:
+          example: dokument_123456.pdf
+          type: string
+      type: object
+    main.SouborMetadata:
+      properties:
+        je_verejny:
+          example: false
+          type: boolean
+        kategorie:
+          example: dokumenty
+          type: string
+        mime_type:
+          example: application/pdf
+          type: string
+        nazev:
+          example: dokument.pdf
+          type: string
+        popis:
+          example: Důležitý dokument
+          type: string
+        velikost:
+          example: 1024
+          type: integer
+      required:
+      - kategorie
+      - nazev
+      type: object
+    main.UploadOdpoved:
+      properties:
+        cesta_souboru:
+          example: /uploads/dokument_123456.pdf
+          type: string
+        datum_upload:
+          example: "2023-01-01T00:00:00Z"
+          type: string
+        id:
+          example: 1
+          type: integer
+        metadata:
+          $ref: '#/components/schemas/main.SouborMetadata'
+        nazev_souboru:
+          example: dokument_123456.pdf
+          type: string
+        zprava:
+          example: Soubor byl úspěšně nahrán
+          type: string
+      type: object
+externalDocs:
+  description: OpenAPI Specifikace
+  url: https://swagger.io/resources/open-api/
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: REST API pro upload souborů s multipart/form-data a OpenAPI 3.0 dokumentací
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: API pro upload souborů
+  version: "1.0"
+openapi: 3.0.0
+paths:
+  /soubory:
+    get:
+      description: Vrátí seznam všech nahraných souborů
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/main.SouborInfo'
+                type: array
+          description: Seznam souborů
+      summary: Získej seznam souborů
+      tags:
+      - soubory
+  /soubory/{id}:
+    get:
+      description: Vrátí informace o konkrétním souboru podle ID
+      parameters:
+      - description: ID souboru
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.SouborInfo'
+          description: Informace o souboru
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.ChybovaOdpoved'
+          description: Soubor nenalezen
+      summary: Získej informace o souboru
+      tags:
+      - soubory
+  /soubory/{id}/download:
+    get:
+      description: Stáhne soubor podle ID
+      parameters:
+      - description: ID souboru
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Soubor
+          schema:
+            type: file
+        "404":
+          description: Soubor nenalezen
+          schema:
+            $ref: '#/components/schemas/main.ChybovaOdpoved'
+      summary: Stáhni soubor
+      tags:
+      - soubory
+  /upload:
+    post:
+      description: Nahraje soubor spolu s JSON metadaty pomocí multipart/form-data
+      parameters:
+      - description: Soubor k nahrání
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: JSON metadata souboru
+        in: formData
+        name: metadata
+        required: true
+        type: string
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.UploadOdpoved'
+          description: Soubor byl úspěšně nahrán
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.ChybovaOdpoved'
+          description: Špatný požadavek
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.ChybovaOdpoved'
+          description: Chyba serveru
+      summary: Nahraj soubor
+      tags:
+      - soubory
+servers:
+- url: http://localhost:8080/api/v1

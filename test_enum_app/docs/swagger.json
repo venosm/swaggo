@@ -1,0 +1,76 @@
+{
+    "components": {
+        "schemas": {
+            "main.StavZpravy": {
+                "enum": [
+                    "AKTIVNI",
+                    "ARCHIVOVANA",
+                    "SMAZANA"
+                ],
+                "type": "string",
+                "x-enum-varnames": [
+                    "StavAktivni",
+                    "StavArchivovana",
+                    "StavSmazana"
+                ]
+            },
+            "main.Zprava": {
+                "properties": {
+                    "id": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "stav_zpravy": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/main.StavZpravy"
+                            }
+                        ],
+                        "description": "Stav zprávy (defaultní hodnota je aktivní).",
+                        "enum": [
+                            "AKTIVNI",
+                            "ARCHIVOVANA",
+                            "SMAZANA"
+                        ],
+                        "example": "AKTIVNI"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "info": {
+        "contact": {},
+        "title": "Test API pro enum duplicity",
+        "version": "1.0"
+    },
+    "openapi": "3.0.0",
+    "paths": {
+        "/test": {
+            "get": {
+                "description": "Test endpoint for enum duplication",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/main.Zprava"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Test endpoint",
+                "tags": [
+                    "test"
+                ]
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/api/v1"
+        }
+    ]
+}
