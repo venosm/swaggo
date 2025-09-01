@@ -13,19 +13,19 @@ GOVET:=$(GOCMD) vet
 GOPATH:=$(shell $(GOCMD) env GOPATH)
 u := $(if $(update),-u)
 
-BINARY_NAME:=swag
-PACKAGES:=$(shell $(GOLIST) github.com/venosm/swaggo github.com/venosm/swaggo/cmd/swag github.com/venosm/swaggo/gen github.com/venosm/swaggo/format)
+BINARY_NAME:=swaggo
+PACKAGES:=$(shell $(GOLIST) github.com/venosm/swaggo github.com/venosm/swaggo/cmd/swaggo github.com/venosm/swaggo/gen github.com/venosm/swaggo/format)
 GOFILES:=$(shell find . -name "*.go" -type f)
 
 all: test build
 
 .PHONY: build
 build: deps
-	$(GOBUILD) -o $(BINARY_NAME) ./cmd/swag
+	$(GOBUILD) -o $(BINARY_NAME) ./cmd/swaggo
 
 .PHONY: install
 install: deps
-	$(GOINSTALL) ./cmd/swag
+	$(GOINSTALL) ./cmd/swaggo
 
 .PHONY: test
 test:
