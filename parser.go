@@ -562,13 +562,13 @@ func parseGeneralAPIInfo(parser *Parser, comments []string) error {
 					return fmt.Errorf("@file directive requires a file path")
 				}
 				filePath := fields[1]
-				
+
 				// Load content from markdown file
 				commentInfo, err := getMarkdownFromFile(filePath, parser.searchDir)
 				if err != nil {
 					return err
 				}
-				
+
 				setSwaggerInfo(parser.swagger, attr, string(commentInfo))
 			} else {
 				setSwaggerInfo(parser.swagger, attr, value)
@@ -976,22 +976,22 @@ func getMarkdownForTag(tagName string, dirPath string) ([]byte, error) {
 
 func getMarkdownFromFile(filePath string, searchDir string) ([]byte, error) {
 	var fullPath string
-	
+
 	if filepath.IsAbs(filePath) {
 		fullPath = filePath
 	} else {
 		fullPath = filepath.Join(searchDir, filePath)
 	}
-	
+
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("Markdown file %s does not exist", fullPath)
 	}
-	
+
 	content, err := os.ReadFile(fullPath)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read markdown file %s: %s", fullPath, err)
 	}
-	
+
 	return content, nil
 }
 

@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"time"
 
+	_ "examplemultipart/docs"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "examplemultipart/docs"
 )
 
 var nahraneSoubory = []SouborInfo{}
@@ -114,11 +114,11 @@ func NahrajSoubor(c *gin.Context) {
 	// Generování jedinečného názvu souboru
 	ext := filepath.Ext(header.Filename)
 	timestamp := time.Now().Unix()
-	novoJmeno := fmt.Sprintf("%s_%d%s", 
-		metadata.Nazev[:min(len(metadata.Nazev), 50)], 
-		timestamp, 
+	novoJmeno := fmt.Sprintf("%s_%d%s",
+		metadata.Nazev[:min(len(metadata.Nazev), 50)],
+		timestamp,
 		ext)
-	
+
 	// Cesta pro uložení
 	cestaSouboru := filepath.Join("uploads", novoJmeno)
 
@@ -155,7 +155,7 @@ func NahrajSoubor(c *gin.Context) {
 		CestaSouboru: cestaSouboru,
 		DatumUpload:  time.Now(),
 	}
-	
+
 	nahraneSoubory = append(nahraneSoubory, souborInfo)
 	nextID++
 

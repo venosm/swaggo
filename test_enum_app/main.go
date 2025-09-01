@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	_ "test_enum_app/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "test_enum_app/docs"
 )
 
 type StavZpravy string
@@ -18,8 +18,8 @@ const (
 )
 
 type Zprava struct {
-	ID          int        `json:"id" example:"1"`
-	StavZpravy  StavZpravy `json:"stav_zpravy,omitempty" validate:"omitempty,oneof=AKTIVNI ARCHIVOVANA SMAZANA AKTIVNI ARCHIVOVANA SMAZANA" example:"AKTIVNI" description:"Stav zprávy (defaultní hodnota je aktivní)."`
+	ID         int        `json:"id" example:"1"`
+	StavZpravy StavZpravy `json:"stav_zpravy,omitempty" validate:"omitempty,oneof=AKTIVNI ARCHIVOVANA SMAZANA AKTIVNI ARCHIVOVANA SMAZANA" example:"AKTIVNI" description:"Stav zprávy (defaultní hodnota je aktivní)."`
 }
 
 // @title Test API pro enum duplicity
@@ -42,7 +42,7 @@ func main() {
 // @Router /test [get]
 func GetZprava(c *gin.Context) {
 	zprava := Zprava{
-		ID: 1,
+		ID:         1,
 		StavZpravy: StavAktivni,
 	}
 	c.JSON(http.StatusOK, zprava)

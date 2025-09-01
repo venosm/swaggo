@@ -1,6 +1,6 @@
 package main
 
-// @title           Test API pro @file direktivu  
+// @title           Test API pro @file direktivu
 // @version         1.0
 // @description     @file ./docs/api.md
 // @termsOfService  http://swagger.io/terms/
@@ -19,7 +19,7 @@ func main() {}
 // @Description  @file ./docs/endpoint.md
 // @Tags         test
 // @Accept       json
-// @Produce      json  
+// @Produce      json
 // @Success      200  {object}  map[string]interface{}
 // @Router       /test [get]
 func TestEndpoint() {}

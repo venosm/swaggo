@@ -616,10 +616,10 @@ func (sf *structField) setOneOf(valValue string) {
 	}
 
 	valValues := parseOneOfParam2(valValue)
-	
+
 	// Create a set to prevent duplicates within this processing
 	enumSet := make(map[interface{}]bool)
-	
+
 	for i := range valValues {
 		value, err := defineType(enumType, valValues[i])
 		if err != nil {

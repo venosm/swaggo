@@ -386,7 +386,7 @@ func (g *Gen) formatMultilineDescriptions(yamlContent []byte) []byte {
 	content := string(yamlContent)
 	lines := strings.Split(content, "\n")
 	var result []string
-	
+
 	for _, line := range lines {
 		// Look for description lines with quoted multiline content
 		if strings.Contains(line, "description:") && strings.Contains(line, "\"") {
@@ -399,26 +399,26 @@ func (g *Gen) formatMultilineDescriptions(yamlContent []byte) []byte {
 					break
 				}
 			}
-			
+
 			// Check if the quoted string contains HTML or multiple lines
 			quotedStart := strings.Index(line, "\"")
 			if quotedStart == -1 {
 				result = append(result, line)
 				continue
 			}
-			
+
 			quotedContent := line[quotedStart:]
-			
+
 			// If it's a simple quoted string, unquote it and check for HTML or newlines
 			if strings.HasPrefix(quotedContent, "\"") && strings.HasSuffix(strings.TrimSpace(quotedContent), "\"") {
 				unquoted := quotedContent[1 : len(quotedContent)-1]
 				unquoted = strings.ReplaceAll(unquoted, "\\n", "\n")
 				unquoted = strings.ReplaceAll(unquoted, "\\\"", "\"")
-				
+
 				// If contains HTML tags or multiple lines, use literal block scalar
 				if strings.Contains(unquoted, "<") && strings.Contains(unquoted, ">") || strings.Contains(unquoted, "\n") {
 					result = append(result, indent+"description: |")
-					
+
 					// Split content into lines and add proper indentation
 					contentLines := strings.Split(unquoted, "\n")
 					for _, contentLine := range contentLines {
@@ -428,10 +428,10 @@ func (g *Gen) formatMultilineDescriptions(yamlContent []byte) []byte {
 				}
 			}
 		}
-		
+
 		result = append(result, line)
 	}
-	
+
 	return []byte(strings.Join(result, "\n"))
 }
 
@@ -497,7 +497,7 @@ func (g *Gen) writeGoDoc(packageName string, output io.Writer, swagger *spec.Swa
 				// Just sanitize backticks for OpenAPI 3.0 - schemes are already handled in servers
 				return strings.Replace(v, "`", "`+\"`\"+`", -1)
 			} else {
-				// Add schemes for Swagger 2.0 
+				// Add schemes for Swagger 2.0
 				v = "{\n    \"schemes\": " + config.LeftTemplateDelim + " marshal .Schemes " + config.RightTemplateDelim + "," + v[1:]
 				// Sanitize backticks
 				return strings.Replace(v, "`", "`+\"`\"+`", -1)
@@ -682,9 +682,9 @@ func (g *Gen) convertOperationToOpenAPI3(operation map[string]interface{}) {
 					if paramObj["in"] == "body" {
 						requestBody := map[string]interface{}{
 							"required": paramObj["required"],
-							"content": map[string]interface{}{},
+							"content":  map[string]interface{}{},
 						}
-						
+
 						content := requestBody["content"].(map[string]interface{})
 						for _, consume := range consumes {
 							if consumeStr, ok := consume.(string); ok {
@@ -693,9 +693,9 @@ func (g *Gen) convertOperationToOpenAPI3(operation map[string]interface{}) {
 								}
 							}
 						}
-						
+
 						operation["requestBody"] = requestBody
-						
+
 						// Remove body parameter from parameters array
 						if params, ok := operation["parameters"].([]interface{}); ok {
 							newParams := []interface{}{}
@@ -759,7 +759,7 @@ func (g *Gen) convertParameterToOpenAPI3(param map[string]interface{}) {
 	// For non-body parameters, wrap type info in schema
 	if param["in"] != "body" && param["in"] != "formData" {
 		schema := map[string]interface{}{}
-		
+
 		// Move type, format, enum, etc. to schema
 		typeFields := []string{"type", "format", "enum", "minimum", "maximum", "minLength", "maxLength", "pattern", "items", "default", "example"}
 		for _, field := range typeFields {
@@ -768,17 +768,17 @@ func (g *Gen) convertParameterToOpenAPI3(param map[string]interface{}) {
 				delete(param, field)
 			}
 		}
-		
+
 		if len(schema) > 0 {
 			param["schema"] = schema
 		}
-		
+
 		// Ensure required is boolean for path parameters
 		if param["in"] == "path" {
 			param["required"] = true
 		}
 	}
-	
+
 	// Update $ref references
 	if schema, ok := param["schema"].(map[string]interface{}); ok {
 		g.updateReferences(schema)
